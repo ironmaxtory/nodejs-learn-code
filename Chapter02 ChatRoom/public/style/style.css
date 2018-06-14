@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul, ol, dl {
+  list-style-position: inside;
+}
+
+#content {
+  padding: 30px;
+}
+
+#messages {
+  height: 300px;
+  margin: 20px auto 20px;
+  background-color: #fafafa;
+}
+
