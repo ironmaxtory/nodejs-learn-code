@@ -1,0 +1,21 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      width: 800px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>TODO List</h1>
+  <form method="POST" action="http://localhost:5020/addItem" enctype="application/x-www-form-urlencoded">
+    <p><input type="text" name="todo" placeholder="请输入待办事项"></p>
+    <p><input type="submit" value="提交"></p>
+  </form>
+</body>
+</html>
