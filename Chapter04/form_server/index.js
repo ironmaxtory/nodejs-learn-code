@@ -3,6 +3,8 @@ var url = require('url');
 var qs = require('querystring');
 var fs = require('fs');
 var path = require('path');
+var formidable = require('formidable');
+
 var ROOT_PATH = __dirname;
 
 var server = http.createServer(function(req, res){
@@ -56,14 +58,21 @@ var showHtml = function(req, res){
 };
 
 var addItem = function(req, res){
-  var body = '';
-  req.setEncoding('utf8');
-  req.on('data', function(chunk){
-    body += chunk;
-  });
-  req.on('end', function(){
-    var obj = qs.parse(body);
-    console.log(obj);
+  // var body = '';
+  // req.setEncoding('utf8');
+  // req.on('data', function(chunk){
+  //   body += chunk;
+  // });
+  // req.on('end', function(){
+  //   var obj = qs.parse(body);
+  //   console.log(obj);
+  //   showHtml(req, res);
+  // });
+
+  var form = new formidable.IncomingForm();
+  form.parse(req, function(err, fields, files){
+    console.log(fields);
+    console.log(files);
     showHtml(req, res);
   });
 };
