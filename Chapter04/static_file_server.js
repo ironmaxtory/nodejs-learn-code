@@ -17,7 +17,6 @@ var server = http.createServer(function(req, res){
   // res.end() 会在 stream.pipe() 内部调用
   stream.pipe(res);
 
-  /*
   // 检查文件是否存在
   fs.stat(absPath, function(err, stat){
     if (err) {
@@ -44,7 +43,6 @@ var server = http.createServer(function(req, res){
       });
     }
   })
-  */
 });
 
 server.listen(5020);

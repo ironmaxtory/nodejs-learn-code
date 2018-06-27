@@ -30,8 +30,8 @@ var notFoundHandler = function(req, res){
 };
 
 var badRequestHandler = function(req, res){
-  rres.statusCode = 404;
-  res.end('404 Bad Request');
+  rres.statusCode = 400;
+  res.end('400 Bad Request');
 };
 
 var postHandler = function(req, res){

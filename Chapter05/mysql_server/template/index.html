@@ -1,0 +1,43 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>TODO List</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    body {
+      width: 600px;
+      margin: 0 auto;
+      padding: 20px 0 0;
+    }
+    .row {
+      display: flex;
+    }
+    .col {
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    .col-4 {
+      width: 40%;
+    }
+    .col-6 {
+      width: 60%;
+    }
+  </style>
+</head>
+<body>
+  <form action="http://localhost:5020/add" enctype="application/x-www-form-urlencoded" method="post">
+    <div class="row">
+      <p class="col col-4">内容：</p>
+      <p class="col col-6"><input type="text" name="content" value="" placeholder="请输入内容"></p>
+    </div>
+    <div class="row">
+      <p class="col col-6"><input type="submit" value="提交"></p>
+    </div>
+  </form>
+</body>
+</html>
