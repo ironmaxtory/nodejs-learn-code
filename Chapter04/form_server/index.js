@@ -51,9 +51,9 @@ var getHandler = function(req, res){
 };
 
 var showHtml = function(req, res){
-  var absPath = path.join(ROOT_PATH, 'templates/index.html');
-  var stream = fs.createReadStream(absPath);
+  var stream, absPath = path.join(ROOT_PATH, 'templates/index.html');
   res.setHeader('Content-Type', 'text/html; charset="uft-8"');
+  stream = fs.createReadStream(absPath);
   stream.pipe(res);
 };
 
