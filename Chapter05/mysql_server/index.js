@@ -1,16 +1,16 @@
 var http = require('http');
 var path = require('path');
+var url = require('url');
 var mysql = require('mysql');
-var work = require('./lib/timetrack');
-
-var TEMPLATE_PATH = path.join(__dirname, '../template')
+var todo = require('./lib/timetrack');
+var CONFIGS = require('./config');
 
 // 连接 mysql
 var db = mysql.createConnection({
   host: '127.0.0.1',
   user: 'root',
   password: 'ironman@Veronica',
-  database: '',
+  database: 'nodejs',
 });
 
 var server = http.createServer(function(req, res){
@@ -38,8 +38,10 @@ var handle400 = function(req, res){
 };
 
 var handlePost = function(req, res){
-  switch (req.pathname) {
+  var urlObj = url.parse(req.url);
+  switch (urlObj.pathname) {
     case '/add':
+      todo.addTodo(db, req, res);
       break;
     case '/update':
       break;
@@ -52,9 +54,17 @@ var handlePost = function(req, res){
 };
 
 var handleGet = function(req, res){
-  switch (req.pathname) {
+  var urlObj = url.parse(req.url);
+  switch (urlObj.pathname) {
     case '/':
-      work.sendHtml(res, path.join(TEMPLATE_PATH, 'index.html'));
+      todo.sendIndexHtml(req, res, db);
+      // todo.sendHtml(
+      //   res, path.join(CONFIGS.TEMPLATE_PATH, 'index.ejs'),
+      //   {
+      //     title: 'TODO List',
+      //     todos: [{content: '待办事项01'},{content: '待办事项02'}]
+      //   }
+      // );
       break;
     default:
       handle404(req, res);
@@ -67,8 +77,8 @@ db.query(
   "CREATE TABLE IF NOT EXISTS todos ("
   + "id INT(10) NOT NULL AUTO_INCREMENT,"
   + "content VARCHAR(512) NOT NULL COMMENT '内容',"
-  + "created_at INT(16) NOT NULL COMMENT '创建时间',"
-  + "updated_at INT(16) NOT NULL COMMENT '更新时间',"
+  + "created_at INT(32) NOT NULL COMMENT '创建时间',"
+  + "updated_at INT(32) NOT NULL COMMENT '更新时间',"
   + "PRIMARY KEY(id)"
   + ")",
   function(err){

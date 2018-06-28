@@ -11,5 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "mysql": "^2.15.0"
+  },
+  "devDependencies": {
+    "ejs": "^2.6.1"
   }
 }
