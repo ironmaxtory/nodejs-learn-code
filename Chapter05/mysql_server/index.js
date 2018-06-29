@@ -1,6 +1,8 @@
+var fs = require('fs');
 var http = require('http');
 var path = require('path');
 var url = require('url');
+var mime = require('mime');
 var mysql = require('mysql');
 var todo = require('./lib/timetrack');
 var CONFIGS = require('./config');
@@ -44,6 +46,7 @@ var handlePost = function(req, res){
       todo.addTodo(db, req, res);
       break;
     case '/update':
+      todo.updateTodo(db, req, res);
       break;
     case '/delete':
       break;
@@ -58,19 +61,23 @@ var handleGet = function(req, res){
   switch (urlObj.pathname) {
     case '/':
       todo.sendIndexHtml(req, res, db);
-      // todo.sendHtml(
-      //   res, path.join(CONFIGS.TEMPLATE_PATH, 'index.ejs'),
-      //   {
-      //     title: 'TODO List',
-      //     todos: [{content: '待办事项01'},{content: '待办事项02'}]
-      //   }
-      // );
+      break;
+    case '/delete':
+      todo.deleteTodo(db, req, res);
       break;
     default:
-      handle404(req, res);
+      var resUrl = path.join(CONFIGS.ROOT_PATH, urlObj.pathname);
+      var type = mime.getType(resUrl);
+      if (fs.existsSync(resUrl)) {
+        res.setHeader('Content-Type', type);
+        (fs.createReadStream(resUrl)).pipe(res);
+      } else {
+        handle404(req, res);
+      }
       break;
   }
 };
+
 
 
 db.query(

@@ -2,6 +2,8 @@ var qs = require('querystring');
 var path = require('path');
 var fs = require('fs');
 var ejs = require('ejs');
+var moment = require('moment');
+var url = require('url');
 var CONFIGS = require('../config');
 
 // 发送 HTML 响应
@@ -20,6 +22,31 @@ var renderHtml = function(htmlPath, data, cb){
     if (err) throw err;
     cb(str);
   });
+};
+
+// 发送首页
+var sendIndexHtml = function(req, res, db){
+  getTodo(db, req, function(data){
+    data.forEach(function(item){
+      item.created_at = moment(item.created_at*1000).format('YYYY-MM-DD hh:mm:ss');
+      item.updated_at = moment(item.updated_at*1000).format('YYYY-MM-DD hh:mm:ss');
+    });
+    sendHtml(
+      res, path.join(CONFIGS.TEMPLATE_PATH, 'index.ejs'),
+      {
+        title: 'TODO List',
+        todos: data,
+      },
+    );
+  });
+};
+
+// 重定向到首页
+var redirectIndexHtml = function(res){
+  res.writeHead(302, {
+    'Location': 'http://localhost:5020/'
+  });
+  res.end();
 };
 
 // 解析 POST 数据
@@ -45,9 +72,23 @@ var addTodo = function(db, req, res){
       [todo.content, timestamp, timestamp],
       function(err){
         if (err) throw err;
-        console.log('addTodo: 发送首页');
         redirectIndexHtml(res);
-        // sendIndexHtml(req, res, db);
+      },
+    );
+  });
+};
+
+// 更新 todo
+var updateTodo = function(db, req, res){
+  parseReceivedData(req, function(todo){
+    var timestamp = Math.ceil(+new Date() / 1000);
+    console.log(todo);
+    db.query(
+      "UPDATE todos SET content=?, updated_at=? WHERE id=? ",
+      [todo.content, timestamp, todo.id],
+      function(err){
+        if (err) throw err;
+        redirectIndexHtml(res);
       },
     );
   });
@@ -56,7 +97,6 @@ var addTodo = function(db, req, res){
 // 获取 todo
 var getTodo = function(db, req, cb){
   var query = "SELECT * FROM todos ORDER BY created_at DESC";
-  console.log('getTodo: 获取todos');
   // 暂时先不支持条件查询吧
   db.query(query, function(err, rows){
     if (err) throw err;
@@ -64,28 +104,23 @@ var getTodo = function(db, req, cb){
   });
 };
 
-var sendIndexHtml = function(req, res, db){
-  getTodo(db, req, function(data){
-    console.log(data);
-    sendHtml(
-      res, path.join(CONFIGS.TEMPLATE_PATH, 'index.ejs'),
-      {
-        title: 'TODO List',
-        todos: data,
-      },
-    );
+// 删除 todo
+var deleteTodo = function(db, req, res){
+  var query = "DELETE FROM todos WHERE id = ?";
+  var uSP = (new url.URL(req.headers.host + req.url)).searchParams;
+  var id = uSP.get('id');
+  db.query(query, id, function(err){
+    if (err) throw err;
+    redirectIndexHtml(res);
   });
 };
 
-var redirectIndexHtml = function(res){
-  res.writeHead(302, {
-    'Location': 'http://localhost:5020/'
-  });
-  res.end();
-};
 
+
+exports.parseReceivedData = parseReceivedData;
 exports.sendHtml = sendHtml;
 exports.sendIndexHtml = sendIndexHtml;
 exports.addTodo = addTodo;
+exports.updateTodo = updateTodo;
 exports.getTodo = getTodo;
-exports.parseReceivedData = parseReceivedData;
+exports.deleteTodo = deleteTodo;
