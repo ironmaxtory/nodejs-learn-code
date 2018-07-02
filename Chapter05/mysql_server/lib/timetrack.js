@@ -116,7 +116,6 @@ var deleteTodo = function(db, req, res){
 };
 
 
-
 exports.parseReceivedData = parseReceivedData;
 exports.sendHtml = sendHtml;
 exports.sendIndexHtml = sendIndexHtml;
