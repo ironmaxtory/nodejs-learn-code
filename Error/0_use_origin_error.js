@@ -1,37 +1,11 @@
-function throwError(){
-  function fnA() {
-    fnB();
-  }
-  
-  function fnB() {
-    fnC();
-  }
-  
-  function fnC() {
-    throw new Error('Error Occurred.');
-  }
-  
-  fnA();
-  console.log('This line will not be printed.');
+function myError() {
+  Error.captureStackTrace(this, test);
 }
-
-function returnError(){
-  function fnA() {
-    return fnB();
-  }
-  
-  function fnB() {
-    return fnC();
-  }
-  
-  function fnC() {
-    return new Error('Error Occurred.');
-  }
-  
-  var res = fnA();
-  console.log(res);
-  console.log('This line will be printed.');
+function test() {
+  var stack = new myError().stack;
+  console.log(stack);
 }
-
-// throwError();
-returnError();
+function run() {
+  test();
+}
+run();
